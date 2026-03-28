@@ -1,0 +1,198 @@
+{
+  "name": "Hermes — Slack to Memory Bridge",
+  "nodes": [
+    {
+      "id": "slack-trigger",
+      "name": "Slack — New Message",
+      "type": "n8n-nodes-base.slackTrigger",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "parameters": {
+        "trigger": "any_event",
+        "events": ["message"]
+      },
+      "notes": "Listens for all messages in connected Slack workspace.\nFilter by channel below if needed."
+    },
+    {
+      "id": "filter-bots",
+      "name": "Filter — Skip Bots",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "no-bot",
+              "leftValue": "={{ $json.event.bot_id }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "notes": "Only process real user messages, not bot messages."
+    },
+    {
+      "id": "extract-fields",
+      "name": "Extract — Message Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [680, 220],
+      "parameters": {
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "content",
+              "name": "content",
+              "value": "={{ $json.event.text }}",
+              "type": "string"
+            },
+            {
+              "id": "agent",
+              "name": "agent",
+              "value": "={{ $json.event.user || 'slack-agent' }}",
+              "type": "string"
+            },
+            {
+              "id": "channel",
+              "name": "channel",
+              "value": "={{ $json.event.channel }}",
+              "type": "string"
+            },
+            {
+              "id": "ts",
+              "name": "ts",
+              "value": "={{ $json.event.ts }}",
+              "type": "string"
+            },
+            {
+              "id": "type",
+              "name": "type",
+              "value": "episodic",
+              "type": "string"
+            },
+            {
+              "id": "importance",
+              "name": "importance",
+              "value": "=5",
+              "type": "number"
+            },
+            {
+              "id": "source",
+              "name": "source",
+              "value": "slack",
+              "type": "string"
+            },
+            {
+              "id": "tags",
+              "name": "tags",
+              "value": "={{ ['slack', $json.event.channel] }}",
+              "type": "array"
+            },
+            {
+              "id": "project",
+              "name": "project",
+              "value": "shared",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "notes": "Maps Slack event fields to Hermes Bridge payload."
+    },
+    {
+      "id": "hermes-store",
+      "name": "Hermes — Store Memory",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [900, 220],
+      "parameters": {
+        "method": "POST",
+        "url": "=http://{{ $env.HERMES_HOST || 'localhost' }}:{{ $env.HERMES_PORT || '8765' }}/store",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ content: $json.content, agent: $json.agent, type: $json.type, project: $json.project, importance: $json.importance, source: $json.source, tags: $json.tags }) }}",
+        "options": {
+          "timeout": 10000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "notes": "POSTs message to Hermes Bridge for storage in shared memory DB.\nSet HERMES_HOST and HERMES_PORT in n8n environment variables.\nOptionally add Authorization header with Bearer token."
+    },
+    {
+      "id": "log-result",
+      "name": "Log — Memory ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [1120, 220],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "memory_id",
+              "name": "memory_id",
+              "value": "={{ $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "stored_at",
+              "name": "stored_at",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "notes": "Captures the memory ID assigned by the bridge. Useful for debugging."
+    }
+  ],
+  "connections": {
+    "Slack — New Message": {
+      "main": [[{ "node": "Filter — Skip Bots", "type": "main", "index": 0 }]]
+    },
+    "Filter — Skip Bots": {
+      "main": [
+        [{ "node": "Extract — Message Fields", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Extract — Message Fields": {
+      "main": [[{ "node": "Hermes — Store Memory", "type": "main", "index": 0 }]]
+    },
+    "Hermes — Store Memory": {
+      "main": [[{ "node": "Log — Memory ID", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all"
+  },
+  "meta": {
+    "description": "Hermes cross-platform memory bridge — Slack → Agent Memory System.\nMessages from Slack are stored in the shared SQLite memory DB.\nTelegram bot can then recall them via the Hermes Bridge HTTP API.",
+    "tags": ["hermes", "memory", "slack", "cross-platform"]
+  }
+}

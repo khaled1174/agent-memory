@@ -124,12 +124,40 @@ project root and Claude Code reads it automatically every session.
 
 Override: `export AGENT_MEMORY_DIR=/custom/path`
 
+## Hermes — Cross-Platform Memory
+
+Two agents collaborate on Slack. You ask on Telegram. The memory carries.
+
+```
+Slack Agent → n8n → Hermes Bridge → memory.db ← Telegram Bot
+```
+
+No vector database. No Redis. Same SQLite file, shared across platforms.
+
+```bash
+# 1. Start the bridge
+python hermes/bridge.py
+
+# 2. Import hermes/n8n_workflow.json into your n8n instance
+# 3. Start the Telegram bot
+TELEGRAM_TOKEN=xxx HERMES_URL=http://your-server:8765 python hermes/telegram_bot.py
+```
+
+See [hermes/README.md](hermes/README.md) for full setup, API reference, and VPS deployment.
+
+---
+
 ## File Structure
 
 ```
 agent-memory/
 ├── memory.py              # Core: CLI + library (1282 lines)
 ├── memory_mcp.py          # MCP server (645 lines, requires: pip install mcp)
+├── hermes/                # Cross-platform memory layer
+│   ├── bridge.py          # HTTP gateway (zero new deps)
+│   ├── telegram_bot.py    # Telegram recall bot (requires: requests)
+│   ├── n8n_workflow.json  # Ready-to-import Slack → memory workflow
+│   └── README.md          # Hermes setup guide
 ├── README.md
 ├── LICENSE
 ├── .gitignore
