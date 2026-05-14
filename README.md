@@ -1,60 +1,6 @@
 <div align="center">
 
-<!-- Banner -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 280" width="900" height="280">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0d1117"/>
-      <stop offset="100%" style="stop-color:#161b22"/>
-    </linearGradient>
-    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#58a6ff"/>
-      <stop offset="100%" style="stop-color:#bc8cff"/>
-    </linearGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>
-  <rect width="900" height="280" fill="url(#bg)" rx="16"/>
-  <line x1="0" y1="70" x2="900" y2="70" stroke="#21262d" stroke-width="1"/>
-  <line x1="0" y1="140" x2="900" y2="140" stroke="#21262d" stroke-width="1"/>
-  <line x1="0" y1="210" x2="900" y2="210" stroke="#21262d" stroke-width="1"/>
-  <line x1="225" y1="0" x2="225" y2="280" stroke="#21262d" stroke-width="1"/>
-  <line x1="450" y1="0" x2="450" y2="280" stroke="#21262d" stroke-width="1"/>
-  <line x1="675" y1="0" x2="675" y2="280" stroke="#21262d" stroke-width="1"/>
-  <circle cx="100" cy="140" r="55" fill="none" stroke="url(#accent)" stroke-width="2" filter="url(#glow)" opacity="0.6"/>
-  <circle cx="100" cy="140" r="40" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-  <circle cx="100" cy="115" r="6" fill="#58a6ff" filter="url(#glow)"/>
-  <circle cx="80" cy="135" r="5" fill="#bc8cff" filter="url(#glow)"/>
-  <circle cx="120" cy="135" r="5" fill="#3fb950" filter="url(#glow)"/>
-  <circle cx="88" cy="158" r="5" fill="#f85149" filter="url(#glow)"/>
-  <circle cx="113" cy="158" r="5" fill="#d29922" filter="url(#glow)"/>
-  <line x1="100" y1="115" x2="80" y2="135" stroke="#58a6ff" stroke-width="1.5" opacity="0.7"/>
-  <line x1="100" y1="115" x2="120" y2="135" stroke="#58a6ff" stroke-width="1.5" opacity="0.7"/>
-  <line x1="80" y1="135" x2="88" y2="158" stroke="#bc8cff" stroke-width="1.5" opacity="0.7"/>
-  <line x1="120" y1="135" x2="113" y2="158" stroke="#3fb950" stroke-width="1.5" opacity="0.7"/>
-  <line x1="80" y1="135" x2="113" y2="158" stroke="#d29922" stroke-width="1" opacity="0.4"/>
-  <line x1="120" y1="135" x2="88" y2="158" stroke="#f85149" stroke-width="1" opacity="0.4"/>
-  <text x="180" y="110" font-family="'Segoe UI', system-ui, sans-serif" font-size="42" font-weight="700" fill="url(#accent)" filter="url(#glow)">agent-memory</text>
-  <text x="182" y="145" font-family="'Segoe UI', system-ui, sans-serif" font-size="16" fill="#8b949e">Persistent Memory System for AI Agents</text>
-  <rect x="182" y="165" width="90" height="24" rx="12" fill="#1f3558" stroke="#58a6ff" stroke-width="1"/>
-  <text x="227" y="181" font-family="monospace" font-size="12" fill="#58a6ff" text-anchor="middle">SQLite + FTS5</text>
-  <rect x="282" y="165" width="80" height="24" rx="12" fill="#2d1f58" stroke="#bc8cff" stroke-width="1"/>
-  <text x="322" y="181" font-family="monospace" font-size="12" fill="#bc8cff" text-anchor="middle">MCP Server</text>
-  <rect x="372" y="165" width="90" height="24" rx="12" fill="#1f3a2d" stroke="#3fb950" stroke-width="1"/>
-  <text x="417" y="181" font-family="monospace" font-size="12" fill="#3fb950" text-anchor="middle">0 Dependencies</text>
-  <rect x="472" y="165" width="85" height="24" rx="12" fill="#3a2d1f" stroke="#d29922" stroke-width="1"/>
-  <text x="514" y="181" font-family="monospace" font-size="12" fill="#d29922" text-anchor="middle">Obsidian Sync</text>
-  <text x="182" y="225" font-family="monospace" font-size="13" fill="#6e7681">Python 3.8+</text>
-  <text x="280" y="225" font-family="monospace" font-size="13" fill="#3fb950">•</text>
-  <text x="295" y="225" font-family="monospace" font-size="13" fill="#6e7681">1282 lines core</text>
-  <text x="410" y="225" font-family="monospace" font-size="13" fill="#3fb950">•</text>
-  <text x="425" y="225" font-family="monospace" font-size="13" fill="#6e7681">58 tests</text>
-  <text x="490" y="225" font-family="monospace" font-size="13" fill="#3fb950">•</text>
-  <text x="505" y="225" font-family="monospace" font-size="13" fill="#6e7681">Cross-platform</text>
-  <rect width="900" height="280" fill="none" stroke="url(#accent)" stroke-width="1.5" rx="16" opacity="0.3"/>
-</svg>
+<img src="https://raw.githubusercontent.com/khaled1174/agent-memory/main/assets/banner.svg" alt="agent-memory banner" width="900"/>
 
 # Agent Memory System
 
@@ -380,6 +326,8 @@ Creates a Markdown file from your most important memories. Place it in your proj
 agent-memory/
 ├── memory.py              # Core: CLI + library (1282 lines)
 ├── memory_mcp.py          # MCP server (645 lines, requires: pip install mcp)
+├── assets/
+│   └── banner.svg         # Repository banner image
 ├── hermes/                # Cross-platform memory layer
 │   ├── bridge.py          # HTTP gateway (zero new deps)
 │   ├── telegram_bot.py    # Telegram recall bot (requires: requests)
